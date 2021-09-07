@@ -1,10 +1,10 @@
 server:
   port: 8091
-Spring:
+spring:
   datasource:
-    driver-class-name: com.myslq.cj.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/sb_c_2021?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull
     username: geotjeoli
-    password: gjl123414
+    password: gjl123414 
 mybatis:
-  type-aliases-package: com.jtj.exam.demo.vo  
+  type-aliases-package: com.jtj.exam.demo.vo
