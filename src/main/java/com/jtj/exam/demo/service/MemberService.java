@@ -3,6 +3,7 @@ package com.jtj.exam.demo.service;
 import org.springframework.stereotype.Service;
 
 import com.jtj.exam.demo.repository.MemberRepository;
+import com.jtj.exam.demo.vo.Member;
 
 @Service
 public class MemberService {
@@ -12,8 +13,23 @@ public class MemberService {
 		this.memberRepository = memberRepository;
 	}
 	
-	public void join(String loginId, String loginPw, String name, String nickname, String cellphoneNo, String email) {
+	public int join(String loginId, String loginPw, String name, String nickname, String cellphoneNo, String email) {
+		Member oldMember = getMemberByLoginId(loginId);
+		
+		if(oldMember != null) {
+			return -1;
+		}
+		
 		memberRepository.join(loginId, loginPw, name, nickname, cellphoneNo, email);
+		return memberRepository.getLastInsertId();
+	}
+
+	private Member getMemberByLoginId(String loginId) {
+		return memberRepository.getMemberByLoginId(loginId);
+	}
+
+	public Member getMemberById(int id) {
+		return memberRepository.getMemberById(id);
 	}
 
 }
