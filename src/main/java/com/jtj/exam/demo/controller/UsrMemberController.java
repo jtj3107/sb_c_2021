@@ -47,6 +47,10 @@ public class UsrMemberController {
 		if (id == -1) {
 			return "해당 `" + loginId + "`는 이미 사용중인 아이디 입니다.";
 		}
+		
+		if(id == -2) {
+			return "해당 `" + name + "`과 `" + email + "`은 이미 사용중 입니다.";
+		}
 
 		Member member = memberService.getMemberById(id);
 
