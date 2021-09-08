@@ -79,3 +79,11 @@ loginPw = 'user2',
 nickname = '사용자2',
 cellphoneNo = '01011111111',
 email = 'jtj3926@gmail.com';
+
+# 게시물 테이블에 회원정보 추가
+ALTER TABLE article ADD COLUMN memberId INT(10) UNSIGNED NOT NULL AFTER updatedate;
+
+# 기존 게시물의 작성자를 2번호로 지정
+UPDATE article 
+SET memberId = 2
+WHERE memberId = 0;
