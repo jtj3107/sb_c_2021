@@ -1,6 +1,6 @@
 package com.jtj.exam.demo.controller;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +11,7 @@ import com.jtj.exam.demo.service.MemberService;
 import com.jtj.exam.demo.util.Ut;
 import com.jtj.exam.demo.vo.Member;
 import com.jtj.exam.demo.vo.ResultData;
+import com.jtj.exam.demo.vo.Rq;
 
 @Controller
 public class UsrMemberController {
@@ -58,37 +59,29 @@ public class UsrMemberController {
 
 	@RequestMapping("/usr/member/doLogout")
 	@ResponseBody
-	public ResultData doLogout(HttpSession httpSession) {
-		boolean isLogined = false;
+	public ResultData doLogout(HttpServletRequest req) {
+		Rq rq = (Rq) req.getAttribute("rq");
 
-		if (httpSession.getAttribute("loginedMemberId") == null) {
-			isLogined = true;
-		}
-
-		if (isLogined) {
+		if (rq.isLogined()) {
 			return ResultData.from("S-1", "이미 로그아웃 상태입니다.");
 		}
 
-		httpSession.removeAttribute("loginedMemberId");
+		rq.logout();
 
 		return ResultData.from("S-2", "로그아웃 되었습니다.");
 	}
 
 	@RequestMapping("/usr/member/login")
-	public String showLogin(HttpSession httpSession, String loginId, String loginPw) {
+	public String showLogin() {
 		return "usr/member/login";
 	}
-	
+
 	@RequestMapping("/usr/member/doLogin")
 	@ResponseBody
-	public String doLogin(HttpSession httpSession, String loginId, String loginPw) {
-		boolean isLogined = false;
+	public String doLogin(HttpServletRequest req, String loginId, String loginPw) {
+		Rq rq = (Rq) req.getAttribute("rq");
 
-		if (httpSession.getAttribute("loginedMemberId") != null) {
-			isLogined = true;
-		}
-
-		if (isLogined) {
+		if (rq.isLogined()) {
 			return Ut.jsHistoryBack("이미 로그인되었습니다.");
 		}
 
@@ -110,7 +103,7 @@ public class UsrMemberController {
 			return Ut.jsHistoryBack("비밀번호가 일치하지 않습니다.");
 		}
 
-		httpSession.setAttribute("loginedMemberId", member.getId());
+		rq.login(member);
 
 		return Ut.jsReplace(Ut.f("%s님 환영합니다.", member.getNickname()), "/");
 	}
