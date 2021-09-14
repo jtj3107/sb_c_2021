@@ -47,10 +47,11 @@ public class ArticleService {
 			return;
 		}
 		
-		ResultData actorCanDelModifyRd = actorCanDelModify(actorId, article);
+		ResultData actorCanDeleteRd = actorCanDelete(actorId, article);
+		article.setExtra__actorCanDelete(actorCanDeleteRd.isSuccess());
 				
-		article.setExtra__actorCanModify(actorCanDelModifyRd.isSuccess());
-		article.setExtra__actorCanDelete(actorCanDelModifyRd.isSuccess());
+		ResultData actorCanModifyRd = actorCanModify(actorId, article);
+		article.setExtra__actorCanModify(actorCanModifyRd.isSuccess());
 	}
 
 	public void deleteArticle(int id) {
@@ -77,7 +78,7 @@ public class ArticleService {
 		return ResultData.from("S-1", "게시물 수정이 가능합니다.");
 	}
 	
-	public ResultData actorCanDelModify(int actor, Article article) {
+	public ResultData actorCanDelete(int actor, Article article) {
 		if(article == null) {
 			return ResultData.from("F-1", "게시물이 존재하지 않습니다.");
 		}
@@ -86,7 +87,7 @@ public class ArticleService {
 			return ResultData.from("F-2", "권한이 없습니다.");
 		}
 		
-		return ResultData.from("S-1", "게시물 수정/삭제가 가능합니다.");
+		return ResultData.from("S-1", "게시물 삭제가 가능합니다.");
 	}
 
 }
