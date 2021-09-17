@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jtj.exam.demo.service.ArticleService;
@@ -30,7 +31,8 @@ public class UsrArticleController {
 	}
 
 	@RequestMapping("/usr/article/list")
-	public String showList(Model model, int boardId) {
+	public String showList(Model model, @RequestParam(defaultValue = "1") int boardId,
+			@RequestParam(defaultValue = "1") int page) {
 		Board board = boardService.getBoardById(boardId);
 
 		if (board == null) {
@@ -38,7 +40,10 @@ public class UsrArticleController {
 		}
 
 		int articlesCount = articleService.getArticlesCount(boardId);
-		List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId(), boardId);
+
+		int itemsCountInApage = 10;
+		List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId(), boardId, itemsCountInApage,
+				page);
 
 		model.addAttribute("board", board);
 		model.addAttribute("articlesCount", articlesCount);
@@ -132,7 +137,7 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/doWrite")
 	@ResponseBody
-	public String doWrite(Integer boardId, String title, String body, String replaceUri) {
+	public String doWrite(@RequestParam(defaultValue = "0") int boardId, String title, String body, String replaceUri) {
 		if (Ut.empty(title)) {
 			return rq.jsHistoryBack("title(을)를 입력해주세요.");
 		}
@@ -140,8 +145,8 @@ public class UsrArticleController {
 		if (Ut.empty(body)) {
 			return rq.jsHistoryBack("body(을)를 입력해주세요.");
 		}
-		
-		if(boardId == null) {
+
+		if (boardId == 0) {
 			return rq.jsHistoryBack("boardId(을)를 선택해주세요.");
 		}
 
