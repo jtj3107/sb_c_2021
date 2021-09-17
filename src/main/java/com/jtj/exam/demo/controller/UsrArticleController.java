@@ -11,22 +11,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.jtj.exam.demo.service.ArticleService;
+import com.jtj.exam.demo.service.BoardService;
 import com.jtj.exam.demo.util.Ut;
 import com.jtj.exam.demo.vo.Article;
+import com.jtj.exam.demo.vo.Board;
 import com.jtj.exam.demo.vo.ResultData;
 import com.jtj.exam.demo.vo.Rq;
 
 @Controller
 public class UsrArticleController {
-	@Autowired
 	private ArticleService articleService;
+	private BoardService boardService;
+	
+	public UsrArticleController(ArticleService articleService, BoardService boardService) {
+		this.articleService = articleService;
+		this.boardService = boardService;
+	}
 
 	@RequestMapping("/usr/article/list")
-	public String showList(HttpServletRequest req, Model model) {
+	public String showList(HttpServletRequest req, Model model, int boardId) {
+		Board board = boardService.getBoardById(boardId);
+		
 		Rq rq = (Rq) req.getAttribute("rq");
 
 		List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId());
 
+		model.addAttribute("board", board);
 		model.addAttribute("articles", articles);
 
 		return "usr/article/list";
