@@ -64,7 +64,6 @@
         </c:if>
       </div>
     </div>
-
   </div>
 </section>
 
