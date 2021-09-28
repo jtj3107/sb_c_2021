@@ -28,7 +28,7 @@ public class ArticleService {
 		int limitStart = (page - 1) * itemsCountInApage;
 		int limitTake = itemsCountInApage;
 
-		List<Article> articles = articleRepository.getArticles(boardId, limitStart, limitTake, searchKeywordTypeCode, searchKeyword);
+		List<Article> articles = articleRepository.getForPrintArticles(boardId, limitStart, limitTake, searchKeywordTypeCode, searchKeyword);
 
 		for (Article article : articles) {
 			updateForPrintData(actorId, article);
@@ -109,6 +109,10 @@ public class ArticleService {
 
 	public int getArticleHitCount(int id) {
 		return articleRepository.getArticleHitCount(id);
+	}
+
+	public boolean actorCanMakeReactionPoint(int actorId, int id) {
+		return articleRepository.getSumReactionPointByMemberId(id, actorId) == 0;
 	}
 
 }

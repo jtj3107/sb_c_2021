@@ -16,7 +16,7 @@
 		if (localStorage.getItem(localStorageKey)) {
 			return;
 		}
-		
+
 		localStorage.setItem(localStorageKey, true);
 
 		$.get('../article/doIncreaseHitCount', {
@@ -63,9 +63,30 @@
             <td>${article.extra__writerName}</td>
           </tr>
           <tr>
-            <th>조회수</th>
+            <th>조회</th>
             <td>
               <span class="badge badge-primary article-detail__hit-count">${article.hitCount}</span>
+            </td>
+          </tr>
+          <tr>
+            <th>추천</th>
+            <td>
+              <div class="flex item-center">
+                <span class="badge badge-primary">${article.extra__goodReactionPoint}</span>
+                <span>&nbsp;</span>
+
+                <c:if test="${actorCanMakeReactionPoint}">
+                  <button class="btn btn-xs btn-primary">
+                    좋아요
+                    👍
+                  </button>
+                  <span>&nbsp;</span>
+                  <button class="btn btn-xs btn-secondary">
+                    싫어요
+                    👎
+                  </button>
+                </c:if>
+              </div>
             </td>
           </tr>
           <tr>
@@ -91,9 +112,5 @@
     </div>
   </div>
 </section>
-
-<!--
-<iframe src="http://localhost:8011/usr/article/doIncreaseHitCountRd?id=2" frameborder="0"></iframe>
--->
 
 <%@ include file="../common/foot.jspf"%>
