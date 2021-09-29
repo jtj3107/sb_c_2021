@@ -4,10 +4,31 @@
 <c:set var="pageTitle" value="게시물 수정" />
 <%@ include file="../common/head.jspf"%>
 
+<script>
+	let ArticleModify__submitDone = false;
+	function ArticleModify__submit(form) {
+		if (ArticleModify__submitDone) {
+			return;
+		}
+
+		form.body.value = form.body.value.trim();
+
+		if (form.body.value.length == 0) {
+			alert('내용을 입력해주세요.');
+			form.body.focus();
+
+			return;
+		}
+
+		ArticleModify__submitDone = true;
+		form.submit();
+	}
+</script>
+
 <section class="mt-5">
   <div class="container mx-auto px-3">
-    <form class="table-box-type-1" method="POST" action="../article/doModify">
-      <input type="hidden" name="id" value="${article.id}"/>
+    <form class="table-box-type-1" method="POST" action="../article/doModify" onsubmit="ArticleModify__submit(this); return false;">
+      <input type="hidden" name="id" value="${article.id}" />
       <table>
         <colgroup>
           <col width="200" />
@@ -21,21 +42,15 @@
           </tr>
           <tr>
             <th>작성날짜</th>
-            <td>
-              ${article.forPrintType2RegDate}
-            </td>
+            <td>${article.forPrintType2RegDate}</td>
           </tr>
           <tr>
             <th>수정날짜</th>
-            <td>
-              ${article.forPrintType2UpdateDate}
-            </td>
+            <td>${article.forPrintType2UpdateDate}</td>
           </tr>
           <tr>
             <th>작성자</th>
-            <td>
-              ${article.extra__writerName}
-            </td>
+            <td>${article.extra__writerName}</td>
           </tr>
           <tr>
             <th>조회</th>
@@ -52,7 +67,7 @@
           <tr>
             <th>제목</th>
             <td>
-              <input class="w-96 input input-bordered" name="title" type="text" placeholder="제목" value="${article.title}"/>
+              <input class="w-96 input input-bordered" name="title" type="text" placeholder="제목" value="${article.title}" />
             </td>
           </tr>
           <tr>
@@ -62,12 +77,14 @@
             </td>
           </tr>
           <tr>
-          <th>수정</th>
+            <th>수정</th>
             <td>
-              <button type="submit" class="btn btn-primary" />수정</button>
+              <button type="submit" class="btn btn-primary" />
+              수정
+              </button>
               <button type="button" class="btn btn-secondary btn-outline" onclick="history.back();">뒤로가기</button>
             </td>
-            </tr>
+          </tr>
         </tbody>
       </table>
     </form>
