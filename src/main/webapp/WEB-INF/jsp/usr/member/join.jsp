@@ -74,8 +74,8 @@
 			return;
 		}
 		form.loginPwConfirm.value = "";
-		form.submit();
 		MemberJoin__submitDone = true;
+		form.submit();
 	}
 </script>
 
