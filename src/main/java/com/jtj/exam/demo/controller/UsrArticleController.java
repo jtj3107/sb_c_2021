@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.jtj.exam.demo.service.ArticleService;
 import com.jtj.exam.demo.service.BoardService;
 import com.jtj.exam.demo.service.ReactionPointService;
+import com.jtj.exam.demo.service.ReplyService;
 import com.jtj.exam.demo.util.Ut;
 import com.jtj.exam.demo.vo.Article;
 import com.jtj.exam.demo.vo.Board;
+import com.jtj.exam.demo.vo.Reply;
 import com.jtj.exam.demo.vo.ResultData;
 import com.jtj.exam.demo.vo.Rq;
 
@@ -23,13 +25,16 @@ import com.jtj.exam.demo.vo.Rq;
 public class UsrArticleController {
 	private ArticleService articleService;
 	private BoardService boardService;
-	private Rq rq;
 	private ReactionPointService reactionPointService;
+	private ReplyService replyService;
+	private Rq rq;
 
-	public UsrArticleController(ArticleService articleService, BoardService boardService, ReactionPointService reactionPointService, Rq rq) {
+	public UsrArticleController(ArticleService articleService, BoardService boardService,
+			ReactionPointService reactionPointService, ReplyService replyService, Rq rq) {
 		this.articleService = articleService;
 		this.boardService = boardService;
 		this.reactionPointService = reactionPointService;
+		this.replyService = replyService;
 		this.rq = rq;
 	}
 
@@ -47,8 +52,8 @@ public class UsrArticleController {
 
 		int itemsCountInApage = 10;
 		int pagesCount = (int) Math.ceil((double) articlesCount / itemsCountInApage);
-		List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId(), boardId, searchKeywordTypeCode, searchKeyword, itemsCountInApage,
-				page);
+		List<Article> articles = articleService.getForPrintArticles(rq.getLoginedMemberId(), boardId,
+				searchKeywordTypeCode, searchKeyword, itemsCountInApage, page);
 
 		model.addAttribute("boardId", boardId);
 		model.addAttribute("page", page);
@@ -67,38 +72,44 @@ public class UsrArticleController {
 		Article article = articleService.getForPrintArticle(rq.getLoginedMemberId(), id);
 
 		model.addAttribute("article", article);
-		
-		ResultData actorCanMakeReactionPointRd = reactionPointService.actorCanMakeReactionPoint(rq.getLoginedMemberId(), "article", id);
+
+		List<Reply> replies = replyService.getForPrintReplies(rq.getLoginedMember(), "article", id);
+		int repliesCount = replies.size();
+
+		model.addAttribute("repliesCount", repliesCount);
+
+		ResultData actorCanMakeReactionPointRd = reactionPointService.actorCanMakeReactionPoint(rq.getLoginedMemberId(),
+				"article", id);
 
 		model.addAttribute("actorCanMakeReaction", actorCanMakeReactionPointRd.isSuccess());
-		
-		if(actorCanMakeReactionPointRd.getResultCode().equals("F-2")) {
-			int sumReactionPointByMemberId = (int)actorCanMakeReactionPointRd.getData1();
-	
-			if(sumReactionPointByMemberId > 0) {
+
+		if (actorCanMakeReactionPointRd.getResultCode().equals("F-2")) {
+			int sumReactionPointByMemberId = (int) actorCanMakeReactionPointRd.getData1();
+
+			if (sumReactionPointByMemberId > 0) {
 				model.addAttribute("actorCanCancelGoodReaction", true);
-			}
-			else {
+			} else {
 				model.addAttribute("actorCanCancelBadReaction", true);
 			}
 		}
-		
+
 		return "usr/article/detail";
 	}
-	
+
 	@RequestMapping("/usr/article/doIncreaseHitCount")
 	@ResponseBody
 	public ResultData<Integer> doIncreaseHitCount(int id) {
 		ResultData<Integer> increaseHitCountRd = articleService.increaseHitCount(id);
-		
-		if(increaseHitCountRd.isFail()) {
+
+		if (increaseHitCountRd.isFail()) {
 			return increaseHitCountRd;
 		}
-		
-		ResultData<Integer> rd = ResultData.newData(increaseHitCountRd, "hitCount", articleService.getArticleHitCount(id));
+
+		ResultData<Integer> rd = ResultData.newData(increaseHitCountRd, "hitCount",
+				articleService.getArticleHitCount(id));
 
 		rd.setData2("id", id);
-		
+
 		return rd;
 	}
 
