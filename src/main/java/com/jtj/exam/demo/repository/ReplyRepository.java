@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.jtj.exam.demo.vo.Reply;
 
@@ -20,12 +21,12 @@ public interface ReplyRepository {
 			relId = #{relId},
 			body = #{body}
 			""")
-	public void writeReply(int memberId, String relTypeCode, int relId, String body);
+	void writeReply(int memberId, String relTypeCode, int relId, String body);
 
 	@Select("""
 			SELECT LAST_INSERT_ID()
 			""")
-	public int getLastInsertId();
+	int getLastInsertId();
 
 	@Select("""
 				SELECT R.*,
@@ -37,7 +38,7 @@ public interface ReplyRepository {
 				AND R.relId = #{relId}
 				ORDER BY R.id DESC
 			""")
-	public List<Reply> getForPrintReplies(String relTypeCode, int relId);
+	List<Reply> getForPrintReplies(String relTypeCode, int relId);
 
 	@Select("""
 				SELECT R.*,
@@ -54,12 +55,20 @@ public interface ReplyRepository {
 				FROM reply AS R
 				WHERE R.id = #{id}
 			""")
-	public Reply getReply(int id);
+	Reply getReply(int id);
 
 	@Delete("""
 				DELETE FROM reply
 				WHERE id = #{id}
 			""")
-	public void deleteReply(int id);
+	void deleteReply(int id);
+
+	@Update("""
+				UPDATE reply
+				SET updateDate = NOW(),
+				`body` = #{body}
+				WHERE id = #{id}
+			""")
+	void modifyReply(int id, String body);
 
 }

@@ -75,13 +75,16 @@
           <tr>
             <th>댓글수정</th>
             <td>
-              <button type="submit" class="btn btn-primary" />댓글수정</button>
+              <button type="submit" class="btn btn-primary" />
+              댓글수정
+              </button>
               <button type="button" class="btn btn-secondary btn-outline" onclick="history.back();">뒤로가기</button>
             </td>
           </tr>
         </tbody>
       </table>
     </form>
+  </div>
 </section>
 
 <%@ include file="../common/foot.jspf"%>
