@@ -114,4 +114,10 @@ public class UsrMemberController {
 		return "usr/member/myPage";
 	}
 	
+	@RequestMapping("/usr/member/checkPassword")
+	public String showCheckPassword() {
+		return "usr/member/checkPassword";
+	}
+	
+	
 }
