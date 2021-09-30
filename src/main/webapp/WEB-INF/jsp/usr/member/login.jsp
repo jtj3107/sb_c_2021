@@ -49,7 +49,7 @@
           <tr>
             <th>로그인 아이디</th>
             <td>
-              <input name="loginId" class="w-96 input input-bordered" type="text" placeholder="로그인아이디" />
+              <input name="loginId" class="w-96 input input-bordered" type="text" placeholder="로그인아이디" value="${param.loginId}" />
             </td>
           </tr>
           <tr>
@@ -69,6 +69,9 @@
         </tbody>
       </table>
     </form>
+    <a class="btn btn-link" href="../member/join">회원가입</a>
+    <a class="btn btn-link" href="../member/findLoginId">아이디 찾기</a>
+    <a class="btn btn-link" href="../member/findLoginPw">비밀번호 찾기</a>
   </div>
 </section>
 
