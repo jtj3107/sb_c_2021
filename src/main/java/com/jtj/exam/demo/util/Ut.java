@@ -1,5 +1,6 @@
 package com.jtj.exam.demo.util;
 
+import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -96,5 +97,27 @@ public class Ut {
 		}
 
 		return sb.toString();
+	}
+
+	public static String getFileContents(String filePath) {
+		String rs = null;
+		try {
+			// 바이트 단위로 파일읽기
+			FileInputStream fileStream = null; // 파일 스트림
+
+			fileStream = new FileInputStream(filePath);// 파일 스트림 생성
+			// 버퍼 선언
+			byte[] readBuffer = new byte[fileStream.available()];
+			while (fileStream.read(readBuffer) != -1) {
+			}
+
+			rs = new String(readBuffer);
+
+			fileStream.close(); // 스트림 닫기
+		} catch (Exception e) {
+			e.getStackTrace();
+		}
+
+		return rs;
 	}
 }

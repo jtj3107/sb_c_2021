@@ -2,6 +2,7 @@ package com.jtj.exam.demo.service;
 
 import org.springframework.stereotype.Service;
 
+import com.jtj.exam.demo.app.App;
 import com.jtj.exam.demo.repository.MemberRepository;
 import com.jtj.exam.demo.util.Ut;
 import com.jtj.exam.demo.vo.Member;
@@ -73,6 +74,12 @@ public class MemberService {
 		}
 
 		return ResultData.from("S-1", "정상적인 코드입니다.");
+	}
+
+	public ResultData sendTempLoginPwToEmail(Member actor) {
+		App app = new App();
+		
+		String siteName = app.getSiteName();
 	}
 
 }
