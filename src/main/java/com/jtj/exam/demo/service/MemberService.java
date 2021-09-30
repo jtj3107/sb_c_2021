@@ -12,10 +12,12 @@ import com.jtj.exam.demo.vo.ResultData;
 public class MemberService {
 	private MemberRepository memberRepository;
 	private AttrService attrService;
+	private EmailService emailService;
 
-	public MemberService(MemberRepository memberRepository, AttrService attrService) {
+	public MemberService(MemberRepository memberRepository, AttrService attrService, EmailService emailService) {
 		this.memberRepository = memberRepository;
 		this.attrService = attrService;
+		this.emailService = emailService;
 	}
 
 	public ResultData join(String loginId, String loginPw, String name, String nickname, String cellphoneNo,
@@ -80,6 +82,30 @@ public class MemberService {
 		App app = new App();
 		
 		String siteName = app.getSiteName();
+		String siteLoginUri = app.getLoginUri();
+		String title = "[" + siteName + "] 임시 패스워드 발송";
+		String tempPassword = Ut.getTempPassword(6);
+		String body = "<h1>임시 패스워드 : " + tempPassword + "<h1>";
+		
+		body += "<a href=\"" + siteLoginUri + "\" target=\"_blank\">로그인 하러가기</a>"; 
+	
+		if(actor.getEmail().length() == 0) {
+			return ResultData.from("F-1", "회원님의 이메일이 존재하지 않습니다.");
+		}
+		
+		int notifyRs = emailService.notify(actor.getEmail(), title, body);
+		
+		if(notifyRs != 1) {
+			return ResultData.from("F-1", "이메일 발송이 실패 하였습니다.");
+		}
+	
+		setTempLoginPw(actor, tempPassword);
+		
+		return ResultData.from("S-1", Ut.f("임시 비밀번호를 `%s`로 발송 하였습니다.", actor.getEmail()));
+	}
+
+	private void setTempLoginPw(Member actor, String tempLoginPw) {
+		memberRepository.modifyPassword(actor.getId(), Ut.sha256(tempLoginPw));
 	}
 
 }

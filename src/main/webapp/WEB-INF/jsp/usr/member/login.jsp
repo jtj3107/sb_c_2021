@@ -41,6 +41,7 @@
 <section class="mt-5">
   <div class="container mx-auto px-3">
     <form class="table-box-type-1" method="POST" action="../member/doLogin" onsubmit="MemberLogin__submit(this); return false;">
+      <input type="hidden" name="loginPwReal" />
       <table>
         <colgroup>
           <col width="200" />
@@ -56,7 +57,6 @@
             <th>로그인 비밀번호</th>
             <td>
               <input name="loginPw" class="w-96 input input-bordered" type="password" placeholder="로그인비밀번호" />
-              <input type="hidden" name="loginPwReal" />
             </td>
           </tr>
           <tr>

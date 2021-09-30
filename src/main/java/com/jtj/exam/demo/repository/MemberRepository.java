@@ -74,4 +74,18 @@ public interface MemberRepository {
 			</script>
 			""")
 	void modify(int id, String loginPw, String name, String nickname, String email, String cellphoneNo);
+
+	@Update("""
+			<script>
+			UPDATE `member`
+			<set>
+					updateDate = NOW(),
+					<if test="loginPw != null">
+					loginPw = #{loginPw},
+					</if>
+			</set>
+			WHERE id = #{id}
+			</script>
+			""")
+	void modifyPassword(int id, String loginPw);
 }
