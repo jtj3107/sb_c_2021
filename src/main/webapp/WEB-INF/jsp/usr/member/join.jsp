@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+
 <c:set var="pageTitle" value="회원가입" />
 <%@ include file="../common/head.jspf"%>
 
@@ -27,53 +29,59 @@
 			form.loginId.focus();
 			return;
 		}
-		if (form.loginId.value != MemberJoin__checkedLoginId) {
-			alert('유효하지 않는 로그인아이디 입니다.');
-			form.btnLoginIdDupCheck.focus();
-			return false;
-		}
+
 		form.loginPw.value = form.loginPw.value.trim();
 		if (form.loginPw.value.length == 0) {
 			alert('로그인 비밀번호를 입력해주세요.');
 			form.loginPw.focus();
 			return;
 		}
+
 		form.loginPwConfirm.value = form.loginPwConfirm.value.trim();
 		if (form.loginPwConfirm.value.length == 0) {
 			alert('로그인 비밀번호 확인을 입력해주세요.');
 			form.loginPwConfirm.focus();
 			return;
 		}
+
 		if (form.loginPw.value != form.loginPwConfirm.value) {
 			alert('로그인 비밀번호 확인이 일치하지 않습니다.');
 			form.loginPwConfirm.focus();
 			return;
 		}
+
 		form.name.value = form.name.value.trim();
 		if (form.name.value.length == 0) {
 			alert('이름을 입력해주세요.');
 			form.name.focus();
 			return;
 		}
+
 		form.nickname.value = form.nickname.value.trim();
 		if (form.nickname.value.length == 0) {
 			alert('닉네임을 입력해주세요.');
 			form.nickname.focus();
 			return;
 		}
+
 		form.email.value = form.email.value.trim();
 		if (form.email.value.length == 0) {
 			alert('이메일을 입력해주세요.');
 			form.email.focus();
 			return;
 		}
+
 		form.cellphoneNo.value = form.cellphoneNo.value.trim();
 		if (form.cellphoneNo.value.length == 0) {
 			alert('전화번호를 입력해주세요.');
 			form.cellphoneNo.focus();
 			return;
 		}
+
+		form.loginPwReal.value = sha256(form.loginPw.value);
+		form.loginPw.value = "";
 		form.loginPwConfirm.value = "";
+
 		MemberJoin__submitDone = true;
 		form.submit();
 	}

@@ -22,13 +22,13 @@ public class UsrMemberController {
 
 	@RequestMapping("/usr/member/doJoin")
 	@ResponseBody
-	public String doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNo,
+	public String doJoin(String loginId, String loginPwReal, String name, String nickname, String cellphoneNo,
 			String email) {
 		if (Ut.empty(loginId)) {
 			return rq.jsHistoryBack("loginId(을)를 입력해주세요.");
 		}
 
-		if (Ut.empty(loginPw)) {
+		if (Ut.empty(loginPwReal)) {
 			return rq.jsHistoryBack("loginPw(을)를 입력해주세요.");
 		}
 
@@ -48,7 +48,7 @@ public class UsrMemberController {
 			return rq.jsHistoryBack("email(을)를 입력해주세요.");
 		}
 
-		ResultData joinRd = memberService.join(loginId, loginPw, name, nickname, cellphoneNo, email);
+		ResultData joinRd = memberService.join(loginId, loginPwReal, name, nickname, cellphoneNo, email);
 
 		if (joinRd.isFail()) {
 			return rq.jsHistoryBack(joinRd.getMsg());
@@ -81,16 +81,12 @@ public class UsrMemberController {
 
 	@RequestMapping("/usr/member/doLogin")
 	@ResponseBody
-	public String doLogin(String loginId, String loginPw) {
-		if (rq.isLogined()) {
-			return rq.jsHistoryBack("이미 로그인되었습니다.");
-		}
-
+	public String doLogin(String loginId, String loginPwReal) {
 		if (Ut.empty(loginId)) {
 			return rq.jsHistoryBack("loginId(을)를 입력해주세요.");
 		}
 
-		if (Ut.empty(loginPw)) {
+		if (Ut.empty(loginPwReal)) {
 			return rq.jsHistoryBack("loginPw(을)를 입력해주세요.");
 		}
 
@@ -100,7 +96,7 @@ public class UsrMemberController {
 			return rq.jsHistoryBack("존재하지 않는 로그인 아이디 입니다.");
 		}
 
-		if (member.getLoginPw().equals(loginPw) == false) {
+		if (member.getLoginPw().equals(loginPwReal) == false) {
 			return rq.jsHistoryBack("비밀번호가 일치하지 않습니다.");
 		}
 
