@@ -1,20 +1,79 @@
 package com.jtj.exam.demo.service;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.jtj.exam.demo.app.App;
-import com.jtj.exam.demo.util.Ut;
+import com.jtj.exam.demo.vo.ResultData;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
+
 
 @Service
 public class EmailService {
+    @Autowired
+    private JavaMailSender sender;
+    @Value("${custom.emailFrom}")
+    private String emailFrom;
+    @Value("${custom.emailFromName}")
+    private String emailFromName;
 
-	public int notify(String to, String title, String body) {
-		App app = new App();
-		String smtpGmailId = app.getSmtpGmailId();
-		String smtpGmailPw = app.getSmtpGmailPw();
-		String from = "no-reply@lemon-cm.com";
-		String fromName = app.getNotifyEmailFromName();
+    private static class MailHandler {
+        private JavaMailSender sender;
+        private MimeMessage message;
+        private MimeMessageHelper messageHelper;
 
-		return Ut.sendMail(smtpGmailId, smtpGmailPw, from, fromName, to, title, body);
-	}
+        public MailHandler(JavaMailSender sender) throws MessagingException {
+            this.sender = sender;
+            this.message = this.sender.createMimeMessage();
+            this.messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+        }
+
+        public void setFrom(String mail, String name) throws UnsupportedEncodingException, MessagingException {
+            messageHelper.setFrom(mail, name);
+        }
+
+        public void setTo(String mail) throws MessagingException {
+            messageHelper.setTo(mail);
+        }
+
+        public void setSubject(String subject) throws MessagingException {
+            messageHelper.setSubject(subject);
+        }
+
+        public void setText(String text) throws MessagingException {
+            messageHelper.setText(text, true);
+        }
+
+        public void send() {
+            try {
+                sender.send(message);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public ResultData send(String email, String title, String body) {
+
+        MailHandler mail;
+        try {
+            mail = new MailHandler(sender);
+            mail.setFrom(emailFrom.replaceAll(" ", ""), emailFromName);
+            mail.setTo(email);
+            mail.setSubject(title);
+            mail.setText(body);
+            mail.send();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultData.from("F-1", "메일이 실패하였습니다.");
+        }
+
+        return ResultData.from("S-1", "메일이 발송되었습니다.");
+    }
 }

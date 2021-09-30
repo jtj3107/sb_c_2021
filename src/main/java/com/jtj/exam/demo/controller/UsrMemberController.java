@@ -117,12 +117,12 @@ public class UsrMemberController {
 
 	@RequestMapping("/usr/member/doCheckPassword")
 	@ResponseBody
-	public String doCheckPassword(String loginPw, String replaceUri) {
-		if (Ut.empty(loginPw)) {
+	public String doCheckPassword(String loginPwReal, String replaceUri) {
+		if (Ut.empty(loginPwReal)) {
 			return rq.jsHistoryBack("loginPw(을)를 입력해주세요.");
 		}
 
-		if (rq.getLoginedMember().getLoginPw().equals(loginPw) == false) {
+		if (rq.getLoginedMember().getLoginPw().equals(loginPwReal) == false) {
 			return rq.jsHistoryBack("비밀번호가 일치하지 않습니다.");
 		}
 
@@ -153,7 +153,7 @@ public class UsrMemberController {
 
 	@RequestMapping("/usr/member/doModify")
 	@ResponseBody
-	public String doModify(String memberModifyAuthKey, String loginPw, String name, String nickname, String email, String cellphoneNo) {
+	public String doModify(String memberModifyAuthKey, String loginPwReal, String name, String nickname, String email, String cellphoneNo) {
 		if (Ut.empty(memberModifyAuthKey)) {
 			return rq.historyBackJsOnView("memberModifyAuthKey(이)가 필요합니다.");
 		}
@@ -165,8 +165,8 @@ public class UsrMemberController {
 			return rq.historyBackJsOnView(checkMemberModifyAuthKeyRd.getMsg());
 		}
 
-		if (Ut.empty(loginPw)) {
-			loginPw = null;
+		if (Ut.empty(loginPwReal)) {
+			loginPwReal = null;
 		}
 
 		if (Ut.empty(name)) {
@@ -185,7 +185,7 @@ public class UsrMemberController {
 			return rq.jsHistoryBack("cellphoneNo(을)를 입력해주세요.");
 		}
 
-		ResultData modifyRd = memberService.modify(rq.getLoginedMemberId(), loginPw, name, nickname, email,
+		ResultData modifyRd = memberService.modify(rq.getLoginedMemberId(), loginPwReal, name, nickname, email,
 				cellphoneNo);
 
 		return rq.jsReplace(modifyRd.getMsg(), "/");
@@ -250,6 +250,6 @@ public class UsrMemberController {
 			return rq.jsHistoryBack(sendTempLoginPwToEmailRd.getMsg());
 		}
 		
-		return rq.jsReplace(Ut.f("회원님의 아이디는 `%s`입니다.", oldMember.getLoginId()), "../member/login");
+		return rq.jsReplace(sendTempLoginPwToEmailRd.getMsg(), "../member/login");
 	}
 }

@@ -1,5 +1,6 @@
 package com.jtj.exam.demo.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.jtj.exam.demo.app.App;
@@ -13,6 +14,11 @@ public class MemberService {
 	private MemberRepository memberRepository;
 	private AttrService attrService;
 	private EmailService emailService;
+
+	@Value("${custom.siteMainUri}")
+	private String siteMainUri;
+	@Value("${custom.siteName}")
+	private String siteName;
 
 	public MemberService(MemberRepository memberRepository, AttrService attrService, EmailService emailService) {
 		this.memberRepository = memberRepository;
@@ -53,25 +59,25 @@ public class MemberService {
 		return memberRepository.getMemberById(id);
 	}
 
-	public ResultData modify(int id, String loginPw, String name, String nickname, String email,
-			String cellphoneNo) {
+	public ResultData modify(int id, String loginPw, String name, String nickname, String email, String cellphoneNo) {
 		memberRepository.modify(id, loginPw, name, nickname, email, cellphoneNo);
-		
+
 		return ResultData.from("S-1", "회원정보가 수정되었습니다.");
 	}
 
 	public String getMemberModifyAuthKey(int actor) {
 		String memberModifyAuthKey = Ut.getTempPassword(10);
-	
-		attrService.setValue("member", actor, "extra", "memberModifyAuthKey", memberModifyAuthKey, Ut.getDateStrLater(60 * 5));
+
+		attrService.setValue("member", actor, "extra", "memberModifyAuthKey", memberModifyAuthKey,
+				Ut.getDateStrLater(60 * 5));
 
 		return memberModifyAuthKey;
 	}
 
 	public ResultData checkMemberModifyAuthKey(int actorId, String memberModifyAuthKey) {
 		String saved = attrService.getValue("member", actorId, "extra", "memberModifyAuthKey");
-		
-		if(!saved.equals(memberModifyAuthKey)) {
+
+		if (!saved.equals(memberModifyAuthKey)) {
 			return ResultData.from("F-1", "일치하지 않거나 만료되었습니다.");
 		}
 
@@ -79,33 +85,29 @@ public class MemberService {
 	}
 
 	public ResultData sendTempLoginPwToEmail(Member actor) {
-		App app = new App();
-		
-		String siteName = app.getSiteName();
-		String siteLoginUri = app.getLoginUri();
 		String title = "[" + siteName + "] 임시 패스워드 발송";
 		String tempPassword = Ut.getTempPassword(6);
 		String body = "<h1>임시 패스워드 : " + tempPassword + "<h1>";
-		
-		body += "<a href=\"" + siteLoginUri + "\" target=\"_blank\">로그인 하러가기</a>"; 
-	
-		if(actor.getEmail().length() == 0) {
+
+		body += "<a href=\"" + siteMainUri + "\" target=\"_blank\">로그인 하러가기</a>";
+
+		if (actor.getEmail().length() == 0) {
 			return ResultData.from("F-1", "회원님의 이메일이 존재하지 않습니다.");
 		}
-		
-		int notifyRs = emailService.notify(actor.getEmail(), title, body);
-		
-		if(notifyRs != 1) {
-			return ResultData.from("F-1", "이메일 발송이 실패 하였습니다.");
+
+		ResultData sendResultData  = emailService.send(actor.getEmail(), title, body);
+
+		if(sendResultData.isFail()) {
+			return ResultData.from("F-2", sendResultData.getMsg());
 		}
-	
+
 		setTempLoginPw(actor, tempPassword);
-		
+
 		return ResultData.from("S-1", Ut.f("임시 비밀번호를 `%s`로 발송 하였습니다.", actor.getEmail()));
 	}
 
 	private void setTempLoginPw(Member actor, String tempLoginPw) {
-		memberRepository.modifyPassword(actor.getId(), Ut.sha256(tempLoginPw));
+		memberRepository.modify(actor.getId(), Ut.sha256(tempLoginPw), null, null, null, null);
 	}
 
 }
