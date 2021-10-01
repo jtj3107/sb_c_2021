@@ -130,4 +130,8 @@ public class Rq {
 	public void initOnBeforeActionInterceptor() {
 
 	}
+
+	public void json(Object obj) {
+		print(Ut.toJson(obj, "{}"));
+	}
 }

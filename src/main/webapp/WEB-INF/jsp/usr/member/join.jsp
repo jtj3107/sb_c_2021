@@ -8,6 +8,42 @@
 
 <script>
 	let MemberJoin__submitDone = false;
+	let MemberJoin__checkedLoginId = "";
+
+	function MemberJoin__checkLoginIdDup(el) {
+		const form = $(el).closest('form').get(0);
+		form.loginId.value = form.loginId.value.trim();
+		$(form).find('.input-loginId-alert').addClass('display-none');
+	
+		if (form.loginId.value.length == 0) {
+			return;
+		}
+		
+		if (form.loginId.value == MemberJoin__checkedLoginId) {
+			$(form).find('.input-loginId-alert.alert-success').removeClass(
+					'display-none');
+			return;
+		}
+		
+		$.get("../member/getLoginIdDup", {
+			ajax : "Y",
+			loginId : form.loginId.value
+		}, function(data) {
+			if (data.success) {
+				MemberJoin__checkedLoginId = data.data1Name.loginId;
+				$(form).find('.input-loginId-alert.alert-success label').text(
+						data.msg);
+				$(form).find('.input-loginId-alert.alert-success').removeClass(
+						'display-none');
+			} else {
+				$(form).find('.input-loginId-alert.alert-error label').text(
+						data.msg);
+				$(form).find('.input-loginId-alert.alert-error').removeClass(
+						'display-none');
+			}
+		}, "json");
+	}
+
 	function MemberJoin__submit(form) {
 		if (MemberJoin__submitDone) {
 			return;
@@ -128,6 +164,23 @@
         <div>
           <input autocomplete="off" class="input input-bordered w-full" maxlength="100" name="loginId" type="text"
             placeholder="사용하실 로그인아이디를 입력해주세요." onchange="MemberJoin__checkLoginIdDup(this);" onkeyup="MemberJoin__checkLoginIdDup(this);" />
+          <div class="alert display-none input-loginId-alert alert-success mt-2">
+            <div class="flex-1">
+              <span>
+                <i class="fas fa-check-circle"></i>
+              </span>
+              <label></label>
+            </div>
+          </div>
+          <div class="alert display-none input-loginId-alert alert-error mt-2">
+            <div class="flex-1">
+              <span>
+                <i class="fas fa-check-circle"></i>
+              </span>
+              <label></label>
+            </div>
+          </div>
+          <div></div>
         </div>
       </div>
 

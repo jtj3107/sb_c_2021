@@ -17,6 +17,9 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 
 public class Ut {
@@ -191,6 +194,16 @@ public class Ut {
 
 		} catch (Exception ex) {
 			return "";
+		}
+	}
+
+	public static String toJson(Object obj, String defaultValue) {
+		ObjectMapper om = new ObjectMapper();
+
+		try {
+			return om.writeValueAsString(obj);
+		} catch (JsonProcessingException e) {
+			return defaultValue;
 		}
 	}
 }

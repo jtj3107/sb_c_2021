@@ -256,4 +256,27 @@ public class UsrMemberController {
 		
 		return rq.jsReplace(sendTempLoginPwToEmailRd.getMsg(), "../member/login");
 	}
+	
+	@RequestMapping("/usr/member/getLoginIdDup")
+	@ResponseBody
+	public ResultData actionGetLoginIdDup(String loginId) {
+		if (Ut.empty(loginId)) {
+			
+			return ResultData.from("S-1", "loginId(을)를 입력해주세요."); 
+		}
+		
+		Member member = memberService.getMemberByLoginId(loginId);
+		
+		ResultData memberRd = null;
+		
+		if(member != null) {
+			memberRd = ResultData.from("F-1", Ut.f("`%s`(은)는 이미 사용중인 아이디 입니다.", loginId), "loginId", loginId);
+		
+			return memberRd;
+		}
+		
+		memberRd = ResultData.from("S-1", Ut.f("`%s`(은)는 사용 가능한 아이디 입니다.", loginId), "loginId", loginId);
+
+		return memberRd;
+	}
 }
