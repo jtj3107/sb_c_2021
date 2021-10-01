@@ -81,7 +81,7 @@ public class UsrMemberController {
 
 	@RequestMapping("/usr/member/doLogin")
 	@ResponseBody
-	public String doLogin(String loginId, String loginPwReal) {
+	public String doLogin(String loginId, String loginPwReal, String redirectUri) {
 		if (Ut.empty(loginId)) {
 			return rq.jsHistoryBack("loginId(을)를 입력해주세요.");
 		}
@@ -101,8 +101,12 @@ public class UsrMemberController {
 		}
 
 		rq.login(member);
+		
+		if (Ut.empty(redirectUri)) {
+			redirectUri = "/";
+		}
 
-		return rq.jsReplace(Ut.f("%s님 환영합니다.", member.getNickname()), "/");
+		return rq.jsReplace(Ut.f("%s님 환영합니다.", member.getNickname()), redirectUri);
 	}
 
 	@RequestMapping("/usr/member/myPage")

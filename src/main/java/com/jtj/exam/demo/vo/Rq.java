@@ -57,6 +57,12 @@ public class Rq {
 
 		print(Ut.jsHistoryBack(msg));
 	}
+	
+	public void printReplaceJs(String msg, String replaceUri) {
+		resp.setContentType("text/html; charset=UTF-8");
+
+		print(Ut.jsReplace(msg, replaceUri));
+	}
 
 	public void print(String str) {
 		try {
@@ -85,6 +91,13 @@ public class Rq {
 	public String historyBackJsOnView(String msg) {
 		req.setAttribute("msg", msg);
 		req.setAttribute("historyBack", true);
+		return "common/js";
+	}
+	
+	public String replaceJsOnView(String msg, String replaceUri) {
+		req.setAttribute("msg", msg);
+		req.setAttribute("historyBack", false);
+		req.setAttribute("replaceUri", replaceUri);
 		return "common/js";
 	}
 
