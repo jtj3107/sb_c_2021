@@ -3,7 +3,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
 
-<c:set var="pageTitle" value="아이디 찾기" />
+<c:set var="pageTitle" value="비밀번호 찾기" />
 <%@ include file="../common/head.jspf"%>
 
 <script>
