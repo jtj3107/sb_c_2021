@@ -6,35 +6,15 @@
 
 <section class="mt-5">
   <div class="container mx-auto px-3">
-    <div class="flex">
-      <div>
-        게시물 개수 : <span class="badge badge-primary">${articlesCount}개</span>
-      </div>
-      <div class="flex-grow"></div>
-      <form class="flex">
-        <input type="hidden" name="boardId" value="${param.boardId}" />
-        
-        <select data-value="${searchKeywordTypeCode}" name="searchKeywordTypeCode" class="select select-bordered">
-          <option disabled="disabled">검색타입</option>
-          <option value="title">제목</option>
-          <option value="body">내용</option>
-          <option value="title,body">제목,내용</option>
-        </select>
-        
-        <input name="searchKeyword" type="text" class="ml-2 w-72 input input-bordered" placeholder="검색어" maxlength="20" value="${param.searchKeyword}"/>
-    
-        <button type="submit" class="ml-2 btn btn-rimary">검색</button>
-      </form>
-    </div>
     <div class="mt-3">
       <table class="table table-fixed w-full">
         <colgroup>
-          <col width="50" />
-          <col width="100" />
-          <col width="100" />
-          <col width="50" />
-          <col width="50" />
-          <col width="150" />
+          <col width="10%" />
+          <col width="20%" />
+          <col width="20%" />
+          <col width="10%" />
+          <col width="10%" />
+          <col width="*" />
           <col />
         </colgroup>
         <thead>
@@ -66,19 +46,24 @@
       </table>
     </div>
 
-    <div class="page-menu mt-3">
+    <div class="page-menu flex my-3">
+      <div>
+        게시물 개수 :
+        <span class="badge badge-primary">${articlesCount}개</span>
+      </div>
+      <div class="flex-grow"></div>
       <div class="btn-group justify-center">
         <c:set var="pageMenuArmLen" value="6" />
         <c:set var="startPage" value="${page - pageMenuArmLen >= 1 ? page - pageMenuArmLen : 1}" />
         <c:set var="endPage" value="${page + pageMenuArmLen <= pagesCount ? page + pageMenuArmLen : pagesCount}" />
-      
+
         <c:set var="pageBaseUri" value="?boardId=${boardId}" />
         <c:set var="pageBaseUri" value="${pageBaseUri}&searchKeywordTypeCode=${searchKeywordTypeCode}" />
         <c:set var="pageBaseUri" value="${pageBaseUri}&searchKeyword=${searchKeyword}" />
-      
+
         <c:if test="${startPage > 1}">
           <a class="btn btn-sm" href="${pageBaseUri}&page=1">1</a>
-          <c:if test="${startPage > 2}">          
+          <c:if test="${startPage > 2}">
             <a class="btn btn-sm btn-disabled">...</a>
           </c:if>
         </c:if>
@@ -88,10 +73,26 @@
         <c:if test="${endPage < pagesCount}">
           <c:if test="${endPage < pagesCount - 1}">
             <a class="btn btn-sm btn-disabled">...</a>
-          </c:if> 
+          </c:if>
           <a class="btn btn-sm" href="${pageBaseUri}&page=${pagesCount}">${pagesCount}</a>
         </c:if>
       </div>
+      <div class="flex-grow"></div>
+      <form class="flex">
+        <input type="hidden" name="boardId" value="${param.boardId}" />
+
+        <select data-value="${searchKeywordTypeCode}" name="searchKeywordTypeCode" class="select select-bordered">
+          <option disabled="disabled">검색타입</option>
+          <option value="title">제목</option>
+          <option value="body">내용</option>
+          <option value="title,body">제목,내용</option>
+        </select>
+
+        <input name="searchKeyword" type="text" class="ml-2 w-72 input input-bordered" placeholder="검색어" maxlength="20"
+          value="${param.searchKeyword}" />
+
+        <button type="submit" class="ml-2 btn btn-rimary">검색</button>
+      </form>
     </div>
   </div>
 </section>
