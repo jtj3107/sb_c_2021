@@ -25,6 +25,60 @@
 <script src="/resource/common.js" defer="defer"></script>
 </head>
 <body>
+  <div class="search-bar">
+    <form action="../article/list" class="grid grid-cols-2" style="column-gap: 10px;">
+      <div class="col-span-2">
+        <div class="badge">게시물 검색</div>
+      </div>
+      <div class="form-control col-span-2 sm:col-span-1">
+        <label class="label">
+          <span class="label-text">게시판</span>
+        </label>
+        <div>
+          <select name="boardId" class="select select-bordered w-full">
+            <option value="0">선택없음</option>
+            <option value="1">공지사항</option>
+            <option value="2">자유게시판</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-control col-span-2 sm:col-span-1">
+        <label class="label">
+          <span class="label-text">검색타입</span>
+        </label>
+        <div>
+          <select name="searchKeywordTypeCode" class="select select-bordered w-full">
+            <option value="title,body">제목,내용</option>
+            <option value="title">제목</option>
+            <option value="body">내용</option>
+          </select>
+
+          <script>
+            if (rqParams.boardId) {
+              $('.search-bar form select[name="boardId"]').val(
+                  rqParams.boardId);
+            }
+          </script>
+        </div>
+      </div>
+
+      <div class="form-control col-span-2">
+        <label class="label">
+          <span class="label-text">검색어</span>
+        </label>
+        <div>
+          <input autocomplete="off" class="input input-primary input-bordered w-full" maxlength="100" name="searchKeyword" type="text"
+            placeholder="검색어를 입력해주세요." />
+        </div>
+      </div>
+
+      <div class="btns col-span-2">
+        <button type="submit" class="btn btn-link">검색</button>
+        <button type="button" class="btn btn-link btn-hide-search-bar">검색취소</button>
+      </div>
+    </form>
+  </div>
   <div class="site-wrap min-h-screen flex flex-col">
     <div class="h-14 lg:h-16 flex-shrink-0"></div>
     <header class="mobile-top-bar fixed z-40 inset-0 h-10 font-bold bg-white shadow lg:hidden">
