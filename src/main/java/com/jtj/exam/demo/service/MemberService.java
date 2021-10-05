@@ -44,6 +44,9 @@ public class MemberService {
 
 		memberRepository.join(loginId, loginPw, name, nickname, cellphoneNo, email);
 		int id = memberRepository.getLastInsertId();
+		
+		setLoginPwModifiedNow(id);
+		
 		return ResultData.from("S-1", "회원가입이 완료되었습니다.", "id", id);
 	}
 
@@ -60,6 +63,10 @@ public class MemberService {
 	}
 
 	public ResultData modify(int id, String loginPw, String name, String nickname, String email, String cellphoneNo) {
+		if(loginPw != null) {
+			setLoginPwModifiedNow(id);
+		}
+		
 		memberRepository.modify(id, loginPw, name, nickname, email, cellphoneNo);
 
 		return ResultData.from("S-1", "회원정보가 수정되었습니다.");
@@ -108,6 +115,42 @@ public class MemberService {
 
 	private void setTempLoginPw(Member actor, String tempLoginPw) {
 		memberRepository.modify(actor.getId(), Ut.sha256(tempLoginPw), null, null, null, null);
+		
+		setIsUsingTempPassword(actor.getId(), true);
+	}
+
+	public void setIsUsingTempPassword(int actorId, boolean use) {
+		attrService.setValue("member__" + actorId + "__extra__isUsingTempPassword", use, null);
+	}
+
+	public boolean isUsingTempPassword(int actorId) {
+		return attrService.getValueAsBoolean("member__" + actorId + "__extra__isUsingTempPassword");
+	}
+
+	private void setLoginPwModifiedNow(int actorId) {
+		attrService.setValue("member__" + actorId + "__extra__loginPwModifiedDate", Ut.getNowDateStr(), null);
+	}
+	
+	public int getOldPasswordDays() {
+		return 90;
+	}
+	
+	public boolean isNeedToModifyOldLoginPw(int actorId) {
+		String date = attrService.getValue("member__" + actorId + "__extra__loginPwModifiedDate");
+	
+		if(Ut.empty(date)) {
+			return true;
+		}
+		
+		int pass = Ut.getPassedSecondsFrom(date);
+		
+		int oldPasswordDays = getOldPasswordDays();
+		
+		if(pass > oldPasswordDays * 60 * 60 * 24) {
+			return true;
+		}
+		
+		return false;
 	}
 
 }

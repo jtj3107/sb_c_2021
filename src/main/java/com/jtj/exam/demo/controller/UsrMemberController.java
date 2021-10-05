@@ -105,8 +105,25 @@ public class UsrMemberController {
 		if (Ut.empty(redirectUri)) {
 			redirectUri = "/";
 		}
+		
+		String alertMsg  = Ut.f("%s님 환영합니다.", member.getNickname());
+		
+		boolean isUsingTempPassword = memberService.isUsingTempPassword(member.getId());
+		
+		if(isUsingTempPassword) {
+			alertMsg  = Ut.f("%s님은 현재 임시 비밀번호를 사용중입니다. 변경 후 이용해주세요.", member.getNickname());
+			redirectUri = "../member/myPage";
+		}
+		
+		boolean isNeedToModifyOldLoginPw = memberService.isNeedToModifyOldLoginPw(member.getId());
 
-		return rq.jsReplace(Ut.f("%s님 환영합니다.", member.getNickname()), redirectUri);
+		if(isNeedToModifyOldLoginPw) {
+			int oldPasswordDays = memberService.getOldPasswordDays();
+			alertMsg = Ut.f("가장 마지막 비밀번호 변경일로 부터 " + oldPasswordDays + "일이 경과되었습니다. 비밀번호를 변경해주세요.", member.getNickname());
+			redirectUri = "../member/myPage";
+		}
+		
+		return rq.jsReplace(alertMsg , redirectUri);
 	}
 
 	@RequestMapping("/usr/member/myPage")
@@ -192,6 +209,10 @@ public class UsrMemberController {
 		ResultData modifyRd = memberService.modify(rq.getLoginedMemberId(), loginPwReal, name, nickname, email,
 				cellphoneNo);
 
+		if(loginPwReal != null) {
+			memberService.setIsUsingTempPassword(rq.getLoginedMemberId(), false);
+		}
+		
 		return rq.jsReplace(modifyRd.getMsg(), "/");
 	}
 	
