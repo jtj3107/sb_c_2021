@@ -115,7 +115,7 @@
     <div class="btns">
       <button class="btn btn-link" type="button" onclick="history.back();">뒤로가기</button>
       <c:if test="${article.extra__actorCanModify}">
-        <a class="btn btn-link" href="../article/modify?id=${article.id}">게시물 수정</a>
+        <button onclick="ReplyModify__showModal(this);" class="btn btn-link">게시물 수정</button>
       </c:if>
       <c:if test="${article.extra__actorCanDelete}">
         <a class="btn btn-link" onclick="if( confirm('정말 삭제하시겠습니까?') == false) return false;" href="../article/doDelete?id=${article.id}">게시물
