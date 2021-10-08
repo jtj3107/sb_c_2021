@@ -115,7 +115,7 @@
     <div class="btns">
       <button class="btn btn-link" type="button" onclick="history.back();">뒤로가기</button>
       <c:if test="${article.extra__actorCanModify}">
-        <button onclick="ReplyModify__showModal(this);" class="btn btn-link">게시물 수정</button>
+        <a class="btn btn-link" href="../article/modify?id=${article.id}">게시물 수정</a>
       </c:if>
       <c:if test="${article.extra__actorCanDelete}">
         <a class="btn btn-link" onclick="if( confirm('정말 삭제하시겠습니까?') == false) return false;" href="../article/doDelete?id=${article.id}">게시물
@@ -157,7 +157,7 @@
   <div class="container mx-auto px-3">
     <h1>댓글 작성</h1>
     <c:if test="${rq.logined}">
-      <form enctype="multipart/form=data" class="table-box-type-1" method="POST" action="../reply/doWrite" onsubmit="ReplyWrite__submitForm(this); return false;">
+      <form class="table-box-type-1" method="POST" action="../reply/doWrite" onsubmit="ReplyWrite__submitForm(this); return false;">
         <input type="hidden" name="relTypeCode" value="article" />
         <input type="hidden" name="relId" value="${article.id}" />
         <table>
